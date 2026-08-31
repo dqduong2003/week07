@@ -17,7 +17,7 @@ describe("StatusChip", () => {
     );
 
     expect(
-      screen.getByText("active")
+      screen.getByText("broken-on-purpose")
     ).toBeInTheDocument();
   });
 

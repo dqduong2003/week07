@@ -1,7 +1,11 @@
 name: CI Pipeline
 
 on:
-  # Manual trigger for the workflow
+  # Run automatically on every push to main (Continuous Integration trigger)
+  push:
+    branches:
+      - main
+  # Also allow the workflow to be started manually from the Actions tab
   workflow_dispatch:
 
 
@@ -78,10 +82,10 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -137,16 +141,14 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        uses: actions/checkout@v5
 
       - name: Login to Azure Container Registry
-        run: |
-          az acr login --name ${{ vars.ACR_NAME }}
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ vars.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build Docker image
         run: |
